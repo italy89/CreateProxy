@@ -3,7 +3,7 @@
 # Squid Installer for CREATEPROXY.com
 # Email: info@createproxy.com
 # Author: https://blog.hostonnet.com
-# Github: https://github.com/zdenekslavik/CreateProxy
+# Github: https://github.com/HostOnNet/squid-proxy-installer
 
 if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 16.04"; then
     /usr/bin/apt update
