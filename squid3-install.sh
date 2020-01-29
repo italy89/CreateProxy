@@ -2,10 +2,19 @@
 
 # Squid Installer for CREATEPROXY.com
 # Email: info@createproxy.com
-# Author: https://blog.hostonnet.com
-# Github: https://github.com/HostOnNet/squid-proxy-installer
 
-if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 16.04"; then
+if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 18.04"; then
+    /usr/bin/apt update
+    /usr/bin/apt -y install apache2-utils squid3
+    touch /etc/squid/passwd
+    /bin/rm -f /etc/squid/squid.conf
+    /usr/bin/touch /etc/squid/blacklist.acl
+    /usr/bin/wget --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zdenekslavik/CreateProxy/master/squid.conf
+    /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
+    /sbin/iptables-save
+    service squid restart
+    systemctl enable squid
+elif cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 16.04"; then
     /usr/bin/apt update
     /usr/bin/apt -y install apache2-utils squid3
     touch /etc/squid/passwd
@@ -43,10 +52,36 @@ elif cat /etc/os-release | grep PRETTY_NAME | grep "jessie"; then
     service squid3 restart
     update-rc.d squid3 defaults
     ln -s /etc/squid3 /etc/squid
+elif cat /etc/os-release | grep PRETTY_NAME | grep "stretch"; then
+    # OS = Debian 9
+    /bin/rm -rf /etc/squid
+    /usr/bin/apt update
+    /usr/bin/apt -y install apache2-utils squid
+    touch /etc/squid/passwd
+    /bin/rm -f /etc/squid/squid.conf
+    /usr/bin/touch /etc/squid/blacklist.acl
+    /usr/bin/wget --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zdenekslavik/CreateProxy/master/squid.conf
+    /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
+    /sbin/iptables-save
+    systemctl enable squid
+    systemctl restart squid
+elif cat /etc/os-release | grep PRETTY_NAME | grep "buster"; then
+    # OS = Debian 10
+    /bin/rm -rf /etc/squid
+    /usr/bin/apt update
+    /usr/bin/apt -y install apache2-utils squid
+    touch /etc/squid/passwd
+    /bin/rm -f /etc/squid/squid.conf
+    /usr/bin/touch /etc/squid/blacklist.acl
+    /usr/bin/wget --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/zdenekslavik/CreateProxy/master/squid.conf
+    /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
+    /sbin/iptables-save
+    systemctl enable squid
+    systemctl restart squid
 else
-    echo "OS NOT SUPPORTED. Contact info@createproxy.com to add support for your OS"
+    echo "OS NOT SUPPORTED.\n"
+    echo "Contact admin@serverok.in to add support for your os."
     exit 1;
 fi
-
 
 #/usr/bin/htpasswd -b -c /etc/squid/passwd USERNAME_HERE PASSWORD_HERE
